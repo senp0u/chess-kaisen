@@ -10,14 +10,6 @@
     <title>Chess Kaisen</title>
 </head>
 <body>
-    <h1 class="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    <form hx-post="/play/">
-        <label for="name">Please enter your user name:</label><br>
-        <input type="text" id="name" name="username"><br>
-    
-        <button type="submit">Look for a game!</button>
-    </form> 
+    {{template "username-form.html"}}
 </body>
 </html>
