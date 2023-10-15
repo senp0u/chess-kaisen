@@ -29,8 +29,12 @@ func main() {
 		    w.WriteHeader(http.StatusBadRequest)
 	        return
         }
-        tmpl := template.Must(template.ParseFiles("templates/welcome.html"))
+        tmpl, err := template.ParseFiles("templates/welcome.html", "templates/board.html")
+        if err != nil{
+            panic(err)
+        }
         tmpl.Execute(w, struct{ Username string }{username})
     })
+
     log.Fatal(http.ListenAndServe(":8080", nil))
 }

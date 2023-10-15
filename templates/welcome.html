@@ -1,7 +1,10 @@
 <div hx-target="this" hx-swap="outerHTML">
+  <div>
     <div>
-      <label>First Name</label>
-      <label>{{ .Username}}</label>
+      <label>Welcome {{ .Username}}!</label><br/>
+      <b>Waiting for other player to start the game</b>
     </div>
     <button hx-get="/username-form/" class="btn">Cancel</button>
+  </div>
+  {{template "board.html"}}
 </div>
