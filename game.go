@@ -5,8 +5,7 @@ import (
     "net/http"
 	"log"
     "time"
-    "fmt"
-    //"os"
+    "os"
     "github.com/gorilla/websocket"
 )
 
@@ -62,15 +61,16 @@ func play(w http.ResponseWriter, r *http.Request) {
 
 func test(conn *websocket.Conn, ch <-chan string) {
     defer conn.Close()
-    i := 0
     for {
-        if err := conn.WriteMessage(1, []byte(fmt.Sprintf("<h1 id='board'>Test %d</h1>", i))); err != nil {
+        time.Sleep(5 * time.Second) 
+        board, err := os.ReadFile("templates/board.html")
+        if err != nil{
+            panic(err)
+        }
+        if err := conn.WriteMessage(1, board); err != nil {
             log.Println("Error: ", err)
             break
         }
-        time.Sleep(5 * time.Second)  
-        i++
-        fmt.Println("Board")
     }
 }
 
