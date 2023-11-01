@@ -7,7 +7,6 @@ import (
     "github.com/gorilla/websocket"
 )
 
-var games Game
 
 var upgrader = websocket.Upgrader{
     ReadBufferSize:  1024,
@@ -31,6 +30,8 @@ func main() {
     })
 
     http.HandleFunc("/play/", play)
+
+    http.HandleFunc("/wsplay/", wsPlay)
 
     log.Fatal(http.ListenAndServe(":8080", nil))
 }

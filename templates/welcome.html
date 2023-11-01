@@ -1,13 +1,18 @@
-<div hx-target="this" hx-swap="outerHTML">
+<div>
   <div>
     <div>
       <label>Welcome {{ .White.Username}}!</label><br/>
       <label>Your color is {{ .White.Color}}!</label><br/>
-      <b>Waiting for other player to start the game</b>
     </div>
     <button hx-get="/username-form/" class="btn">Cancel</button>
   </div>
-  {{template "board.html"}}
-  <label>Welcome {{ .Black.Username}}!</label><br/>
-  <label>Your color is {{ .Black.Color}}!</label><br/>
+  {{if .Black.Username}} 
+    {{template "board.html"}}
+    <label>Welcome {{ .Black.Username}}!</label><br/>
+    <label>Your color is {{ .Black.Color}}!</label><br/>
+  {{else}}
+    {{template "board.html"}}
+    <label>Welcome {{ .Black.Username}}!</label><br/>
+    <label>Your color is {{ .Black.Color}}!</label><br/>
+  {{end}}
 </div>

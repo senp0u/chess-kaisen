@@ -4,6 +4,10 @@ import (
     "html/template"
     "net/http"
 	"log"
+    "time"
+    "fmt"
+    //"os"
+    "github.com/gorilla/websocket"
 )
 
 type Game struct{
@@ -35,8 +39,10 @@ func (g *Game) addPlayerToGame(username string){
     }
 }
 
+var games Game
+
 func play(w http.ResponseWriter, r *http.Request) {
-    username := "Test"//r.PostFormValue("username")
+    username := r.PostFormValue("username")
     if username == "" {
         w.Header().Set("x-missing-field", "username")
         w.WriteHeader(http.StatusBadRequest)
@@ -45,52 +51,39 @@ func play(w http.ResponseWriter, r *http.Request) {
     if games.isGameFull(){
         panic("The game is full")
     }
-
-    // Upgrade upgrades the HTTP connection to WebSocket
-    conn, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-		w.Header().Set("x-missing-field", "username")
-        w.WriteHeader(http.StatusInternalServerError)
-		log.Println(err)
-        return
-	}
-    defer conn.Close()
-
-	chn := make(chan string)
-
-	go func() {
-		defer close(chn)
-		for {
-			_, message, err := conn.ReadMessage()
-			if err != nil {
-				log.Println("Message:", message)
-				log.Println("Error:", err)
-				return
-			}
-			log.Printf("recv: %s", message)
-		}
-	}()
-
-	/*for {
-		mt, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Println("read:", err)
-			break
-		}
-		log.Printf("recv: %s", message)
-		err = conn.WriteMessage(mt, message)
-		if err != nil {
-			log.Println("write:", err)
-			break
-		}
-	}
-
-
     
-    /*games.addPlayerToGame(username)*/
+    games.addPlayerToGame(username)
     tmpl, err := template.ParseFiles("templates/welcome.html", "templates/board.html")
     if err != nil{
         panic(err)
     }
     tmpl.Execute(w, games)
+}
+
+func test(conn *websocket.Conn, ch <-chan string) {
+    defer conn.Close()
+    i := 0
+    for {
+        if err := conn.WriteMessage(1, []byte(fmt.Sprintf("<h1 id='board'>Test %d</h1>", i))); err != nil {
+            log.Println("Error: ", err)
+            break
+        }
+        time.Sleep(5 * time.Second)  
+        i++
+        fmt.Println("Board")
+    }
+}
+
+func wsPlay(w http.ResponseWriter, r *http.Request) {
+    // Upgrade upgrades the HTTP connection to WebSocket
+    conn, err := upgrader.Upgrade(w, r, nil)
+    if err != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+		log.Println(err)
+        return
+	}
+
+	ch := make(chan string)
+
+	go test(conn, ch)
 }
