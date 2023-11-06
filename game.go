@@ -7,15 +7,17 @@ import (
     "time"
     "os"
     "github.com/gorilla/websocket"
+    "fmt"
 )
 
 type Game struct{
     White Player
     Black Player
+    ch chan string
 }
 
 func (g Game) startGame(){
-
+    //ToDo
     return 
 }
 
@@ -29,11 +31,13 @@ func (g *Game) addPlayerToGame(username string){
             Username: username,
             Color: "White",
         }
+       g.ch = make(chan string)
     }else{
         g.Black = Player{
             Username: username,
             Color: "Black",
         }
+        g.ch <- username
         g.startGame()
     }
 }
@@ -59,15 +63,20 @@ func play(w http.ResponseWriter, r *http.Request) {
     tmpl.Execute(w, games)
 }
 
-func test(conn *websocket.Conn, ch <-chan string) {
+func playGame(conn *websocket.Conn) {
     defer conn.Close()
     for {
+        user := <-games.ch
+        fmt.Println(user)
         time.Sleep(5 * time.Second) 
         board, err := os.ReadFile("templates/board.html")
+        x := string(board)
+        y := fmt.Sprintf(x, games.Black.Username, games.Black.Color)
         if err != nil{
             panic(err)
         }
-        if err := conn.WriteMessage(1, board); err != nil {
+        //if err := conn.WriteMessage(1, board); err != nil {
+        if err := conn.WriteMessage(1, []byte(y)); err != nil {
             log.Println("Error: ", err)
             break
         }
@@ -83,7 +92,5 @@ func wsPlay(w http.ResponseWriter, r *http.Request) {
         return
 	}
 
-	ch := make(chan string)
-
-	go test(conn, ch)
+	go playGame(conn)
 }

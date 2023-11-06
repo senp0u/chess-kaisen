@@ -9,8 +9,6 @@
   <div class="game-area" hx-ext="ws" ws-connect="/wsplay/">
     {{if .Black.Username}} 
       {{template "board.html"}}
-      <label>Welcome {{ .Black.Username}}!</label><br/>
-      <label>Your color is {{ .Black.Color}}!</label><br/>
     {{else}}
       <div id='board' class="smooth" style="color:red" >
           Waiting for other player
