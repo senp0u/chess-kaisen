@@ -1,13 +1,15 @@
+package view 
 
+templ Index(){
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://unpkg.com/htmx.org@1.9.6"></script><!--HTMX-->
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script><!--HTMX Websocket-->
-    <link href="/dist/output.css" rel="stylesheet"><!--Tailwind-->
+    <link href="/dist/output.css" rel="stylesheet"/><!--Tailwind-->
     <style>
         .chess-board { border-spacing: 0; border-collapse: collapse; }
         .chess-board th { padding: .5em; }
@@ -19,6 +21,7 @@
     <title>Chess Kaisen</title>
 </head>
 <body>
-    {{template "username-form.html"}}
+    @UsernameForm()
 </body>
 </html>
+}
