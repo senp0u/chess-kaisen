@@ -1,3 +1,8 @@
+package view 
+
+import model "github.com/senp0u/chess-kaisen/models"
+
+templ Board(player model.Player){
 <div id='board' hx-swap-oob='true'>
     <table class="chess-board">
         <tbody>
@@ -102,6 +107,7 @@
             </tr>
         </tbody>
     </table>
-    <label>Welcome %s!</label><br/>
-    <label>Your color is %s!</label><br/>
+    <label>Welcome { player.Username }!</label><br/>
+    <label>Your color is { player.Color }!</label><br/>
 </div>
+}
