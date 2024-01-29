@@ -1,6 +1,7 @@
 package handler
 
 import (
+        "context"
 	"net/http"
 	"log"
 	"time"
@@ -57,11 +58,10 @@ func PlayGame(conn *websocket.Conn, r *http.Request) {
 
         time.Sleep(5 * time.Second) 
         component := view.Board(game.Black)
-        y, err := templ.ToGoHTML(r.Context(), component)
+        x, err := ComponentToBytes(r.Context(), &component)
         if err != nil{
-            log.Println("Error generating the Go HTML Template")
+            log.Println("Error generating []bytes from teml.Component")
         }
-        x := string(y)
         if err := conn.WriteMessage(1, []byte(x)); err != nil {
             log.Println("Error: ", err)
             break
@@ -78,4 +78,13 @@ func WSPlay(w http.ResponseWriter, r *http.Request) {
         return
     }
     go PlayGame(conn, r)
+}
+
+func ComponentToBytes(ctx context.Context, c *templ.Component) (b []byte, err error) {
+	buffer := templ.GetBuffer()
+	defer templ.ReleaseBuffer(buffer)
+	if err = (*c).Render(ctx, buffer); err != nil {
+	    return []byte{}, err
+	}
+	return buffer.Bytes(), nil
 }
