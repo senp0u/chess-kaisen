@@ -1,0 +1,28 @@
+package view
+
+import model "github.com/senp0u/chess-kaisen/models"
+
+templ Game(game model.Game){
+	<div hx-target="this" hx-swap="outerHTML">
+	<div>
+		<div>
+		<label>Welcome { game.White.Username }!</label><br/>
+		<label>Your color is { game.White.Color}!</label><br/>
+		</div>
+	</div>
+		if game.IsGameFull() {
+			<div id='board' class="game-area" hx-ext="ws" ws-connect="/wsplay/">
+				@Board(game.Board)
+			</div>
+			<label>Welcome { game.Black.Username}!</label><br/>
+			<label>Your color is { game.Black.Color }!</label><br/>
+		}else{
+			<div id='board' class="game-area" hx-ext="ws" ws-connect="/wsplay/">
+				<button hx-get="/cancel/" class="btn">Cancel</button>
+				<div class="smooth" style="color:red" >
+					Waiting for other player
+				</div>
+			</div>
+		}
+	</div>
+}

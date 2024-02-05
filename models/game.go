@@ -4,6 +4,7 @@ type Game struct{
     White Player
     Black Player
     Ch chan string
+    Board [64]Piece
 }
 
 func (g Game) StartGame(){
@@ -11,15 +12,9 @@ func (g Game) StartGame(){
     return 
 }
 
-func (g Game) Prepare(){
-    g.White = Player{
-        Username: "",
-        Color: "White",
-    }
-    g.Black = Player{
-        Username: "",
-        Color: "Black",
-    }
+
+func (g *Game) RemovePlayer(){
+    g.White.Username = ""
 }
 
 func (g Game) IsGameFull() bool{
@@ -32,7 +27,7 @@ func (g *Game) AddPlayerToGame(username string){
             Username: username,
             Color: "White",
         }
-       g.Ch = make(chan string)
+        g.Ch = make(chan string)
     }else{
         g.Black = Player{
             Username: username,
